@@ -1,0 +1,56 @@
+HW 3, Question 3: Part a
+Write psuedocode for scenario that uses a monitor (uses cwait() and csignal()). Based on Figure 5.19 in the textbook.
+
+In this scenario, Process 0 acts as a producer who generates the data while Processes 1-10 act as the consumers who take the data. The buffer is only able to hold one number at a time, so I will force the producer (P0) to wait if the integer is "full" (if P0 has a random number stored in it that is not used by a process). Similarly, the consumers (P1-P10) will wait if the integer is "empty" (if P0 has not yet generated a random number or if the random number had been used by a processes).
+
+Only one process can execute inside a monitor at a time, which automatically allows for mutual exclusion. I used cwait and csignal (both conditionals) to indicate whether the integer (x) is "full" or "empty".
+
+monitor SomeMonitor():
+    int random_num
+    bool full = False
+    cond notfull, notempty
+
+    void producer():
+        if full == True:
+            cwait(notfull)
+
+        buffer = x
+        full = True
+        csignal(notempty)
+
+    int consumer():
+        if full == False
+            cwait(notempty)
+
+        x = buffer
+        full = False
+        csignal(notfull)
+
+        return x
+
+    
+    void p0():
+        loop 10 times:
+            int x = generate_random()
+            SomeMonitor.producer(random_num)
+    
+    void pi():          # where i is integers 1-10
+        int x = SomeMonitor.consumer()
+        use(x)          # by Processes 1-10
+
+
+HW 3, Question 3: Part b
+Write psuedocode for scenario that uses a messages (uses send() and recieve()). Based on Figure 5.24 in the textbook.
+
+Shared variables like a global int are not needed in the message parsing system. P0 sends the number. P1-P10 will request the number.
+
+void p0():
+    loop 10 times:
+        recieve(request for number from pi)     # where i is the number of the process 1-10
+        int x = generate_random()
+        send(x to pi)
+
+void pi():                                      # where i is the number of the process 1-10
+    send(request for number to p0)
+    recieve(x from p0)
+    use(x)                                      # by processes 1-10

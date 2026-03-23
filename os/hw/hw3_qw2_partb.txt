@@ -1,0 +1,18 @@
+HW 3, Question 2: Part b
+Psuedocode using exchange() instruction
+
+# psuedocode
+shared int count = 0
+shared int lock = 0
+
+def thread():
+    repeat n times:
+        key = 1
+        while key == 1:
+            key = exchange(lock, 1)
+
+        # critical section
+        print(count)
+        count += 1
+
+        lock = 0
